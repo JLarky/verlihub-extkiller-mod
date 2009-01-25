@@ -16,7 +16,7 @@ function VH_OnUserLogin(nick)
 	res, sIp = VH:GetUserIP(nick)
 	_, obsh = str2ip(sIp)
 	if obsh == 0 then obsh = "инета"; else obsh = obsh.." общаги"; end
-	msg=string.format("ѕривет, %s! ƒл€ справки, ты из %s!\n» не забываем пожалуйста заплатывать свои кор€вые винды (у кого они есть) от черв€ка о котором написано тут http://wiki.punklan.net/news:2009-01-22_conficker\nЌу и о другой страшной проблеме, о аське - http://dchub.punklan.net/node/27", nick, obsh)
+	msg=string.format("ѕривет, %s! Ќе забудь поставить новые заплатки на винду, дабы не отлючили от сети. Ќа вики написаны подробности http://wiki.punklan.net/news:2009-01-22_conficker\n стати если вдруг перестало пускать в icq (ну или боишс€, что перестанет), почитай это, может пригодитс€ http://dchub.punklan.net/node/27", nick )
 	SendMessageToUser(msg, nick, "info_bot")
 	return 1
 end
@@ -41,7 +41,7 @@ function ban(nick,othernick)
         _, obsh2 = str2ip(sIp2)
         if obsh==0 or obsh2==0 then
          msg=string.format("соединение %s(%s общага) с %s(%s общага) не будет установленно. чтобы разрешить соединение напишите .allowme в чат. более подробно о том что произошло читаем тут http://dchub.punklan.net/node/15", nick, obsh, othernick, obsh2)
-	 SendPmMessageToUser(msg.." - "..count, "JLarky", botname)
+--	 SendPmMessageToUser(msg.." - "..count, "JLarky", botname)
 
 	 if (not (obsh == 0)) and (unbanlist[nick] > 0) then -- качает человек из общаги и он разрешил себе скачивать
 	  unbanlist[nick]=unbanlist[nick]-1
