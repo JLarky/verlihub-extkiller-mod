@@ -63,7 +63,7 @@ end
 
 
 function VH_OnParsedMsgChat(nick,data)
-if string.find(data, "^\.ip", 1) then
+if string.find(data, "^%.ip", 1) then
  nnick = data:match("^.ip (.+)$")
  if nnick then nnick = data:match("^.ip (.+)$"); else nnick=nick; end
  result, sIP = VH:GetUserIP(nnick)
@@ -80,14 +80,14 @@ if string.find(data, "^\.ip", 1) then
 	 SendMessageToUser(string.format("Пользователя "..nnick.." нет или чё-то глючит"), nick, botname)
 	end
  return nil
-elseif string.find(data, "^.allowme", 1) then
+elseif string.find(data, "^%.allowme", 1) then
 	if not unbanlist then unbanlist = {};end
 	if not unbanlist[nick] then unbanlist[nick] = 0; end
 	unbanlist[nick]=unbanlist[nick]+1
 	local c = unbanlist[nick]
          SendMessageToUser(string.format("Количество внешних соединений которые будут приняты - "..c), nick, botname)
  return nil
-elseif string.find(data, "^.denyme", 1) then
+elseif string.find(data, "^%.denyme", 1) then
         if not unbanlist then unbanlist = {};end
         unbanlist[nick]=0
          SendMessageToUser(string.format("Количество внешних соединений которые будут приняты - 0"), nick, botname)
