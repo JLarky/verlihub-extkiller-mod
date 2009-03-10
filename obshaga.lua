@@ -16,7 +16,7 @@ function VH_OnUserLogin(nick)
 	res, sIp = VH:GetUserIP(nick)
 	_, obsh = str2ip(sIp)
 	if obsh == 0 then obsh = "инета"; else obsh = obsh.." общаги"; end
-	msg=string.format("Привет, %s! Не забудь поставить новые заплатки на винду, дабы не отлючили от сети. На вики написаны подробности http://wiki.punklan.net/news:2009-01-22_conficker\nКстати если вдруг перестало пускать в icq (ну или боишся, что перестанет), почитай это, может пригодится http://dchub.punklan.net/node/27", nick )
+	msg=string.format("Привет, %s! Не забудь поставить новые заплатки на винду, дабы не отлючили от сети. На вики написаны подробности http://wiki.punklan.net/news:2009-01-22_conficker\nДа и вообще, недавно satter поднял сервер для обновлений винды, так что если вы всё ещё пользуетесь виндами, то вам сюда http://wiki.punklan.net/lan:wsus", nick )
 	SendMessageToUser(msg, nick, "info_bot")
 	return 1
 end
