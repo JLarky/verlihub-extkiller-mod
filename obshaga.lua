@@ -16,7 +16,7 @@ function VH_OnUserLogin(nick)
 	res, sIp = VH:GetUserIP(nick)
 	_, obsh = str2ip(sIp)
 	if obsh == 0 then obsh = "инета"; else obsh = obsh.." общаги"; end
-	msg=string.format("Привет, %s! Не забудь поставить новые заплатки на винду, дабы не отлючили от сети. На вики написаны подробности http://wiki.punklan.net/news:2009-01-22_conficker\nДа и вообще, недавно satter поднял сервер для обновлений винды, так что если вы всё ещё пользуетесь виндами, то вам сюда http://wiki.punklan.net/lan:wsus", nick )
+	msg=string.format("Привет, %s! Не забудь поставить новые заплатки на винду, дабы не отключили от сети. На вики написаны подробности http://wiki.punklan.net/news:2009-01-22_conficker\nДа и вообще, недавно satter поднял сервер для обновлений винды, так что если вы всё ещё пользуетесь виндами, то вам сюда http://wiki.punklan.net/lan:wsus", nick )
 	SendMessageToUser(msg, nick, "info_bot")
 	return 1
 end
@@ -87,6 +87,14 @@ elseif string.find(data, "^%.allowme", 1) then
 	local c = unbanlist[nick]
          SendMessageToUser(string.format("Количество внешних соединений которые будут приняты - "..c), nick, botname)
  return nil
+elseif string.find(data, "^%.allowten", 1) then
+	if not unbanlist then unbanlist = {};end
+	if not unbanlist[nick] then unbanlist[nick] = 0; end
+	unbanlist[nick]=unbanlist[nick]+10
+	local c = unbanlist[nick]
+         SendMessageToUser(string.format("Количество внешних соединений которые будут приняты - "..c), nick, botname)
+ return nil
+
 elseif string.find(data, "^%.denyme", 1) then
         if not unbanlist then unbanlist = {};end
         unbanlist[nick]=0
