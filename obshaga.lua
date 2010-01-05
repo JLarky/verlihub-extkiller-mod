@@ -8,6 +8,14 @@ NumberOfMessages = 0
 
 _, botname = VH:GetConfig("config", "hub_security")
 
+function VH_OnUserLogin(nick)
+--  usermenu="Демокик"
+  VH:SendDataToUser("$UserCommand 0 3|", user)
+  VH:SendDataToUser ("$UserCommand 1 3 ip$<%[mynick]> .ip %[nick]&#124;|", nick)
+
+end
+
+
 function GetMessages()
 		return "тест кодировки"
 end
@@ -16,8 +24,9 @@ function VH_OnUserLogin(nick)
 	res, sIp = VH:GetUserIP(nick)
 	_, obsh = str2ip(sIp)
 	if obsh == 0 then obsh = "инета"; else obsh = obsh.." общаги"; end
-	msg=string.format("Привет, %s! Не забудь поставить новые заплатки на винду, дабы не отключили от сети. На вики написаны подробности http://wiki.punklan.net/news:2009-01-22_conficker\nДа и вообще, недавно satter поднял сервер для обновлений винды, так что если вы всё ещё пользуетесь виндами, то вам сюда http://wiki.punklan.net/lan:wsus", nick )
-	SendMessageToUser(msg, nick, "info_bot")
+--	msg=string.format("Привет, %s! Не забудь поставить новые заплатки на винду, дабы не отключили от сети. На вики написаны подробности http://wiki.punklan.net/news:2009-01-22_conficker\nДа и вообще, недавно satter поднял сервер для обновлений винды, так что если вы всё ещё пользуетесь виндами, то вам сюда http://wiki.punklan.net/lan:wsus", nick )
+	msg=string.format("Привет, %s! Хаб jlarky.punklan.net закрыавется вместо него запущен новый - adc://jlarky.punklan.net:4111\nВ случае если твой клиент не поддерживает ADC установи нормальный из ftp://jlarky.punklan.net/incom/ADC/ ", nick )
+--	SendMessageToUser(msg, nick, "info_bot")
 	return 1
 end
 
@@ -39,7 +48,13 @@ function ban(nick,othernick)
         res, sIp2 = VH:GetUserIP(othernick)
 	_, obsh = str2ip(sIp1)
         _, obsh2 = str2ip(sIp2)
-        if obsh==0 or obsh2==0 then
+	if (not obsh) then
+            obsh=0
+         end
+	 if (not obsh2) then
+            obsh2=0
+         end
+	 if obsh==0 or obsh2==0 then
          msg=string.format("соединение %s(%s общага) с %s(%s общага) не будет установленно. чтобы разрешить соединение напишите .allowme в чат. более подробно о том что произошло читаем тут http://dchub.punklan.net/node/15", nick, obsh, othernick, obsh2)
 --	 SendPmMessageToUser(msg.." - "..count, "JLarky", botname)
 
@@ -47,7 +62,7 @@ function ban(nick,othernick)
 	  unbanlist[nick]=unbanlist[nick]-1
 	  SendPmMessageToUser(string.format("внешний коннект на %s(%s). осталось разрешённых %s", othernick, sIp2, unbanlist[nick]) , nick, botname)
 	  return 1
-	 elseif (not (obsh2 == 0)) and (unbanlist[othernick] > 0) then -- качает c человека из общаги и он разрешил с себя скачивать
+	 elseif (not (obsh2 == 0)) and (unbanlist[othernick]) and (unbanlist[othernick] > 0) then -- качает c человека из общаги и он разрешил с себя скачивать
 	  unbanlist[othernick]=unbanlist[othernick]-1
 	  SendPmMessageToUser(string.format("внешний коннект с %s(%s). осталось разрешённых %s", nick, sIp1, unbanlist[othernick]) , nick, botname)
 	  return 1
