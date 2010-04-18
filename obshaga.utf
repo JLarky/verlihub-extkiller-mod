@@ -54,8 +54,19 @@ function ban(nick,othernick)
 	 if (not obsh2) then
             obsh2=0
          end
+
 	 if obsh==0 or obsh2==0 then
-         msg=string.format("соединение %s(%s общага) с %s(%s общага) не будет установленно. чтобы разрешить соединение напишите .allowme в чат. более подробно о том что произошло читаем тут http://dchub.punklan.net/node/15", nick, obsh, othernick, obsh2)
+	    if obsh==0 then
+	       ob1="интернет"
+	    else
+	       ob1=obsh.." общага"
+	    end
+	    if obsh2==0 then
+	       ob2="интернет"
+	    else
+	       ob2=obsh2.." общага"
+	    end
+         msg=string.format("Соединение %s(%s) с %s(%s) не будет установленно, так как кто-то из юзеров находится в инете, а за трафик нужно платить. Если вы всё равно уверены, что хотите платить денежки, то читайте http://dchub.punklan.net/node/15 до полного просветления.", nick, ob1, othernick, ob2)
 --	 SendPmMessageToUser(msg.." - "..count, "JLarky", botname)
 
 	 if (not (obsh == 0)) and (unbanlist[nick] > 0) then -- качает человек из общаги и он разрешил себе скачивать
