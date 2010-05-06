@@ -7,26 +7,30 @@ LastTenMessages = {}
 NumberOfMessages = 0
 
 _, botname = VH:GetConfig("config", "hub_security")
-
-function VH_OnUserLogin(nick)
---  usermenu="Демокик"
-  VH:SendDataToUser("$UserCommand 0 3|", user)
-  VH:SendDataToUser ("$UserCommand 1 3 ip$<%[mynick]> .ip %[nick]&#124;|", nick)
-
-end
-
+deny_max_time=10
+deny_max_attempt=5
 
 function GetMessages()
 		return "тест кодировки"
 end
 
 function VH_OnUserLogin(nick)
+        VH:SendDataToUser ("$UserCommand 1 3 ip$<%[mynick]> .ip %[nick]&#124;|", nick)
 	res, sIp = VH:GetUserIP(nick)
 	_, obsh = str2ip(sIp)
 	if obsh == 0 then obsh = "инета"; else obsh = obsh.." общаги"; end
 --	msg=string.format("Привет, %s! Не забудь поставить новые заплатки на винду, дабы не отключили от сети. На вики написаны подробности http://wiki.punklan.net/news:2009-01-22_conficker\nДа и вообще, недавно satter поднял сервер для обновлений винды, так что если вы всё ещё пользуетесь виндами, то вам сюда http://wiki.punklan.net/lan:wsus", nick )
-	msg=string.format("Привет, %s! Хаб jlarky.punklan.net закрыавется вместо него запущен новый - adc://jlarky.punklan.net:4111\nВ случае если твой клиент не поддерживает ADC установи нормальный из ftp://jlarky.punklan.net/incom/ADC/ ", nick )
+--	msg=string.format("Привет, %s! Хаб jlarky.punklan.net закрыавется вместо него запущен новый - adc://jlarky.punklan.net:4111\nВ случае если твой клиент не поддерживает ADC установи нормальный из ftp://jlarky.punklan.net/incom/ADC/ ", nick )
 --	SendMessageToUser(msg, nick, "info_bot")
+
+        res, sIp = VH:GetUserIP(nick)
+        _, obsh = str2ip(sIp)
+
+	result, iClass = VH:GetUserClass(nick)
+	if iClass==0 and obsh==0 then
+	  SendMessageToUser("Тут такое дело, на хаб из интернета могут попасть только зарегистрированные юзеры. Удачи! :)", nick, "jlarky@gmail.com")
+	  deny_login(nick, sIp)
+	end
 	return 1
 end
 
@@ -36,6 +40,58 @@ end
 
 function VH_OnParsedMsgRevConnectToMe(nick,othernick)
  return ban(nick, othernick)
+end
+
+
+function deny_login(nick, sIp)
+  local time=os.time()
+  add_attempt(sIp, time)
+  local count=get_attempts(sIp, time)
+  if count >= deny_max_attempt then
+    msg="Количество подлючений для данного айпи превысило предел."
+    VH:KickUser(botname, nick, msg)
+    SendMsgToAdmins("Зобанен за частые подключения ".."nick:"..nick.." ip:"..sIp)
+  else
+    VH:CloseConnection(nick)
+  end
+end
+
+function get_denylog()
+  if deny_log then
+    return deny_log
+  else
+    return {}
+  end
+end
+
+function add_attempt(sIp, time)
+  local d=0
+  deny_log=get_denylog()
+  if deny_log[time] then
+    if deny_log[time][sIp] then
+      d=deny_log[time][sIp]
+    end
+  else
+    deny_log[time]={}
+  end
+  deny_log[time][sIp]=d+1
+end
+
+function get_attempts(sIp, time)
+  local count=0
+  local new_deny_log={}
+  for i = 0, deny_max_time, 1 do
+    if deny_log then
+      if deny_log[time-i] then
+        if deny_log[time-i][sIp] then
+	  count = count+deny_log[time-i][sIp]
+	end
+        new_deny_log[time-i]=deny_log[time-i]
+      end
+    end
+  end
+  deny_log=new_deny_log -- delete old records
+  return count
 end
 
 function ban(nick,othernick)
@@ -156,4 +212,8 @@ end
 function SendPmMessageToUser(data, nick, from)
 	result, err = VH:SendDataToUser("$To: "..nick.." From: "..from.." $<"..from.."> "..data.."|", nick)
 	return 1
+end
+
+function SendMsgToAdmins(msg)
+	VH:SendPMToAll(msg,botname, 5, 10)
 end
